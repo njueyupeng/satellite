@@ -1,2 +1,4 @@
-# satellite
-Modular set of functions for SGP4 and SDP4 propagation of TLEs.
+
+# Satellite
+
+A library to make satellite propagation via TLEs , Provides the functions necessary for SGP4/SDP4 calculations. Also provides functions for coordinate transforms.
