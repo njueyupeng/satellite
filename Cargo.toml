@@ -2,10 +2,11 @@
 name = "satellite"
 version = "0.1.0"
 edition = "2021"
-authors = ["Yupeng <1196194875@qq.com>"]
+authors = ["Yu Peng <1196194875@qq.com>"]
 readme = "README.md"
 license = "MIT"
 repository = "https://github.com/njueyupeng/satellite"
 description = "Modular set of functions for SGP4 and SDP4 propagation of TLEs."
 
 [dependencies]
+chrono = "0.4.38"
