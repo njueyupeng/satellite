@@ -13,17 +13,17 @@ A high-performance library to make satellite propagation via TLEs , powered by R
 > This library is currently in active development and not usable for production yet.
 
 
-<!-- ## Speed Vs satellite.js
+## Speed Vs satellite.js
 
 ## Installation
 
-### Node.js -->
-<!-- Attention: The package name is `satellite.rs`, which is different from the original package name. -->
+### Node.js
+Attention: The package name is `satellite.rs`, which is different from the original package name.
 
-<!-- ```bash -->
-<!-- # npm install satellite.rs --save -->
-<!-- ``` -->
-<!-- 
+```bash
+npm install satellite.rs --save
+```
+
 ### Browser(wasm)
 
 ### Rust
@@ -34,5 +34,20 @@ A high-performance library to make satellite propagation via TLEs , powered by R
 
 ### WebAssembly
 
-### Rust -->
+### Rust
+
+
+
+## todo
+
+- [ ] Rust
+- [ ] WebAssembly
+- [ ] TypeScript
+- [ ] Documentation
+- [ ] Test
+- [ ] Contributing
+- [ ] Changelog
+- [ ] Contributors
+- [ ] Donate
+- [ ] FAQ
 

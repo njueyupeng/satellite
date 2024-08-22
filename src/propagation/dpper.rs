@@ -1,22 +1,22 @@
 use crate::constants::{PI, TWO_PI};
-use crate::types::Satrec;
+use crate::types::{DpperInit, DpperOpsMode, SatRec};
 
 pub struct DpperOption {
-    init: char,
-    opsmode: char,
-    ep: f64,
-    inclp: f64,
-    nodep: f64,
-    argpp: f64,
-    mp: f64,
+    pub init: DpperInit,
+    pub opsmode: DpperOpsMode,
+    pub ep: f64,
+    pub inclp: f64,
+    pub nodep: f64,
+    pub argpp: f64,
+    pub mp: f64,
 }
 
 pub struct DpperResult {
-    ep: f64,
-    inclp: f64,
-    nodep: f64,
-    argpp: f64,
-    mp: f64,
+    pub ep: f64,
+    pub inclp: f64,
+    pub nodep: f64,
+    pub argpp: f64,
+    pub mp: f64,
 }
 
 // -----------------------------------------------------------------------------
@@ -86,7 +86,7 @@ pub struct DpperResult {
 //     vallado, crawford, hujsak, kelso  2006
 // ----------------------------------------------------------------------------
 
-pub fn deper(satrec: &Satrec, options: &DpperOption) -> DpperResult {
+pub fn dpper(satrec: &SatRec, options: &DpperOption) -> DpperResult {
     let e3 = satrec.e3;
     let ee2 = satrec.ee2;
     let peo = satrec.peo;
@@ -120,8 +120,8 @@ pub fn deper(satrec: &Satrec, options: &DpperOption) -> DpperResult {
     let zmol = satrec.zmol;
     let zmos = satrec.zmos;
 
-    let init = options.init;
-    let opsmode = options.opsmode;
+    let init: DpperInit = options.init.clone();
+    let opsmode = options.opsmode.clone();
     let mut ep = options.ep;
     let mut inclp = options.inclp;
     let mut nodep = options.nodep;
@@ -162,7 +162,7 @@ pub fn deper(satrec: &Satrec, options: &DpperOption) -> DpperResult {
     //  --------------- calculate time varying periodics -----------
     zm = zmos + (ZNS * t);
 
-    if init == 'y' {
+    if init == DpperInit::Y {
         zm = zmos;
     }
     zf = zm + (2.0 * ZES * zm.sin());
@@ -177,7 +177,7 @@ pub fn deper(satrec: &Satrec, options: &DpperOption) -> DpperResult {
     let shs = (sh2 * f2) + (sh3 * f3);
 
     zm = zmol + (ZNL * t);
-    if init == 'y' {
+    if init == DpperInit::Y {
         zm = zmol;
     }
 
@@ -198,7 +198,7 @@ pub fn deper(satrec: &Satrec, options: &DpperOption) -> DpperResult {
     pgh = sghs + sghl;
     ph = shs + shll;
 
-    if init == 'n' {
+    if init == DpperInit::N {
         pe -= peo;
         pinc -= pinco;
         pl -= plo;
@@ -237,7 +237,7 @@ pub fn deper(satrec: &Satrec, options: &DpperOption) -> DpperResult {
 
             //  sgp4fix for afspc written intrinsic functions
             //  nodep used without a trigonometric function ahead
-            if nodep < 0.0 && opsmode == 'a' {
+            if nodep < 0.0 && opsmode == DpperOpsMode::A {
                 nodep += TWO_PI;
             }
             xls = mp + argpp + (cosip * nodep);
@@ -248,7 +248,7 @@ pub fn deper(satrec: &Satrec, options: &DpperOption) -> DpperResult {
 
             //  sgp4fix for afspc written intrinsic functions
             //  nodep used without a trigonometric function ahead
-            if nodep < 0.0 && opsmode == 'a' {
+            if nodep < 0.0 && opsmode == DpperOpsMode::A {
                 nodep += TWO_PI;
             }
             if (xnoh - nodep).abs() > PI {

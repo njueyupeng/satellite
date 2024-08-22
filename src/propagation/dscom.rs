@@ -68,7 +68,7 @@ use crate::constants::TWO_PI;
 *    vallado, crawford, hujsak, kelso  2006
 ----------------------------------------------------------------------------*/
 
-pub struct Dsdom {
+pub struct DscomOption {
     pub epoch: f64,
     pub ep: f64,
     pub argpp: f64,
@@ -77,7 +77,7 @@ pub struct Dsdom {
     pub nodep: f64,
     pub np: f64,
 }
-pub struct DsdomResult {
+pub struct DscomResult {
     pub snodm: f64,
     pub cnodm: f64,
     pub sinim: f64,
@@ -161,7 +161,7 @@ pub struct DsdomResult {
     pub zmos: f64,
 }
 
-pub fn dscom(options: Dsdom) -> DsdomResult {
+pub fn dscom(options: DscomOption) -> DscomResult {
     let epoch = options.epoch;
     let ep = options.ep;
     let tc = options.tc;
@@ -405,7 +405,7 @@ pub fn dscom(options: Dsdom) -> DsdomResult {
     let xh2 = -2.0 * s2 * z22;
     let xh3 = -2.0 * s2 * (z23 - z21);
 
-    DsdomResult {
+    DscomResult {
         snodm,
         cnodm,
         sinim,

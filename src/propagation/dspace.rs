@@ -1,5 +1,57 @@
 use crate::constants::TWO_PI;
 
+pub struct DspaceOption {
+    pub irez: u32,
+    pub d2201: f64,
+    pub d2211: f64,
+    pub d3210: f64,
+    pub d3222: f64,
+    pub d4410: f64,
+    pub d4422: f64,
+    pub d5220: f64,
+    pub d5232: f64,
+    pub d5421: f64,
+    pub d5433: f64,
+    pub dedt: f64,
+    pub del1: f64,
+    pub del2: f64,
+    pub del3: f64,
+    pub didt: f64,
+    pub dmdt: f64,
+    pub dnodt: f64,
+    pub domdt: f64,
+    pub argpo: f64,
+    pub argpdot: f64,
+    pub t: f64,
+    pub tc: f64,
+    pub gsto: f64,
+    pub xfact: f64,
+    pub xlamo: f64,
+    pub no: f64,
+    pub atime: f64,
+    pub em: f64,
+    pub argpm: f64,
+    pub inclm: f64,
+    pub xli: f64,
+    pub mm: f64,
+    pub xni: f64,
+    pub nodem: f64,
+    pub nm: f64,
+}
+
+pub struct DspaceResult {
+    pub atime: f64,
+    pub em: f64,
+    pub argpm: f64,
+    pub inclm: f64,
+    pub xli: f64,
+    pub mm: f64,
+    pub xni: f64,
+    pub nodem: f64,
+    pub dndt: f64,
+    pub nm: f64,
+}
+
 /*-----------------------------------------------------------------------------
 *
 *                           procedure dspace
@@ -72,58 +124,6 @@ use crate::constants::TWO_PI;
 *    hoots, schumacher and glover 2004
 *    vallado, crawford, hujsak, kelso  2006
 ----------------------------------------------------------------------------*/
-pub struct DspaceOption {
-    pub irez: u32,
-    pub d2201: f64,
-    pub d2211: f64,
-    pub d3210: f64,
-    pub d3222: f64,
-    pub d4410: f64,
-    pub d4422: f64,
-    pub d5220: f64,
-    pub d5232: f64,
-    pub d5421: f64,
-    pub d5433: f64,
-    pub dedt: f64,
-    pub del1: f64,
-    pub del2: f64,
-    pub del3: f64,
-    pub didt: f64,
-    pub dmdt: f64,
-    pub dnodt: f64,
-    pub domdt: f64,
-    pub argpo: f64,
-    pub argpdot: f64,
-    pub t: f64,
-    pub tc: f64,
-    pub gsto: f64,
-    pub xfact: f64,
-    pub xlamo: f64,
-    pub no: f64,
-    pub atime: f64,
-    pub em: f64,
-    pub argpm: f64,
-    pub inclm: f64,
-    pub xli: f64,
-    pub mm: f64,
-    pub xni: f64,
-    pub nodem: f64,
-    pub nm: f64,
-}
-
-pub struct DspaceResult {
-    pub atime: f64,
-    pub em: f64,
-    pub argpm: f64,
-    pub inclm: f64,
-    pub xli: f64,
-    pub mm: f64,
-    pub xni: f64,
-    pub nodem: f64,
-    pub dndt: f64,
-    pub nm: f64,
-}
-
 pub fn dspace(options: DspaceOption) -> DspaceResult {
     let irez = options.irez;
     let d2201 = options.d2201;
