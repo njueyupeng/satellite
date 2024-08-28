@@ -1,4 +1,4 @@
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct SatRec {
     // near earth variables
     pub isimp: u32,
@@ -25,6 +25,8 @@ pub struct SatRec {
     pub x1mth2: f64,
     pub x7thm1: f64,
     pub mdot: f64,
+    pub nddot: f64,
+    pub ndot: f64,
     pub nodedot: f64,
     pub xlcof: f64,
     pub xmcof: f64,
@@ -133,6 +135,8 @@ impl SatRec {
             x1mth2: 0.0,
             x7thm1: 0.0,
             mdot: 0.0,
+            nddot: 0.0,
+            ndot: 0.0,
             nodedot: 0.0,
             xlcof: 0.0,
             xmcof: 0.0,
@@ -215,14 +219,14 @@ impl SatRec {
     }
 }
 
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Clone, Debug)]
 pub enum DpperOpsMode {
     A,
     I,
     NONE,
 }
 
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Clone, Debug)]
 pub enum DpperInit {
     Y,
     N,

@@ -3,13 +3,14 @@ use std::i64;
 
 use crate::constants::{DEG2RAD, PI};
 use crate::ext::{days2mdhms, jday};
+use crate::propagation::sgp4init::{sgp4init, Sgp4InitOptions};
 use crate::types::{DpperOpsMode, SatRec};
 
 fn parse_float(str: &str) -> f64 {
     return str.parse::<f64>().unwrap();
 }
-fn parse_int(str: &str) -> i64 {
-    return str.parse::<i64>().unwrap();
+fn parse_int(str: &str) -> u32 {
+    return str.parse::<u32>().unwrap();
 }
 
 /* -----------------------------------------------------------------------------
@@ -75,81 +76,32 @@ pub fn twoline2satrec(longstr1: &str, longstr2: &str) -> SatRec {
     let mut satrec = SatRec::new();
     satrec.error = 0;
 
-    // satrec.satnum = longstr1[2..7].trim();
+    satrec.satnum = String::from(longstr1[2..7].trim());
+    satrec.epochyr = parse_int(longstr1[18..20].trim());
+    satrec.epochdays = parse_float(longstr1[20..32].trim());
+    satrec.ndot = parse_float(longstr1[33..43].trim());
+    let temp = parse_int(longstr1[44..50].trim());
+    let temp2 = parse_float(longstr1[50..52].trim());
+    satrec.nddot =
+        parse_float(&(String::from("0.") + &temp.to_string() + "E" + &temp2.to_string()));
+    let bsTemp1 = parse_int(longstr1[53..54].trim());
+    let bsTemp2 = parse_int(longstr1[54..59].trim());
+    let bsTemp3 = parse_int(longstr1[59..61].trim());
+    satrec.bstar = parse_float(
+        &(String::from("")
+            + &bsTemp1.to_string()
+            + "."
+            + &bsTemp2.to_string()
+            + "E"
+            + &bsTemp3.to_string()),
+    );
 
-    satrec.satnum = if let Some(sub_string) = longstr1.get(2..7) {
-        String::from(sub_string)
-    } else {
-        String::from("")
-    };
-
-    // let epochyr = parse_int(longstr1.substring(18, 20), 10);
-
-    // if let Some(substring) = longstr1.get(18..20) {
-    //     // 尝试将子字符串解析为十进制整数
-    //     satrec.epochyr = parse_int(substring)
-    // } else {
-    //     eprintln!("Substring range is out of bounds");
-    // }
-
-    // if let Some(substring) = longstr1.get(20..32) {
-    //     satrec.epochdays = parse_float(substring)
-    // } else {
-    //     eprintln!("Substring range is out of bounds");
-    // }
-
-    // if let Some(substring) = longstr1.get(33..43) {
-    //     satrec.ndot = parse_float(substring)
-    // } else {
-    //     eprintln!("Substring range is out of bounds");
-    // }
-
-    // if let Some(substring) = longstr1.get(40..50) {
-    //     if let Some(substring2) = longstr1.get(50..52) {
-    //         satrec.nddot =
-    //             String::from(".") + parse_int(substring).to_string().as_str() + "E" + substring2;
-    //     } else {
-    //         eprintln!("Substring range is out of bounds");
-    //     }
-    // } else {
-    //     eprintln!("Substring range is out of bounds");
-    // }
-
-    // // todo
-    // if let Some(substring) = longstr1.get(53..54) {
-    //     if let Some(substring2) = longstr1.get(54..59) {
-    //         if let Some(substring3) = longstr1.get(59..61) {
-    //             satrec.bstar = parse_float(
-    //                 String::from(substring).as_str()
-    //                     + "."
-    //                     + parse_int(substring2).to_string().as_str(),
-    //             )
-    //         } else {
-    //             eprintln!("Substring range is out of bounds");
-    //         }
-    //     } else {
-    //         eprintln!("Substring range is out of bounds");
-    //     }
-    // } else {
-    //     eprintln!("Substring range is out of bounds");
-    // }
-
-    // todo
-    // satrec.bstar = parse_float(
-    //   `${longstr1.substring(53, 54)}.${parse_int(
-    //     longstr1.substring(54, 59),
-    //     10,
-    //   )}E${longstr1.substring(59, 61)}`,
-    // );
-
-    // satrec.satnum = longstr2.substring(2, 7);
-    // todo
-    // satrec.inclo = parse_float(longstr2.substring(8, 16));
-    // satrec.nodeo = parse_float(longstr2.substring(17, 25));
-    // satrec.ecco = parse_float(`.${longstr2.substring(26, 33)}`);
-    // satrec.argpo = parse_float(longstr2.substring(34, 42));
-    // satrec.mo = parse_float(longstr2.substring(43, 51));
-    // satrec.no = parse_float(longstr2.substring(52, 63));
+    satrec.inclo = parse_float(longstr2[8..16].trim());
+    satrec.nodeo = parse_float(longstr2[17..25].trim());
+    satrec.ecco = parse_float(longstr2[26..33].trim());
+    satrec.argpo = parse_float(longstr2[34..42].trim());
+    satrec.mo = parse_float(longstr2[43..51].trim());
+    satrec.no = parse_float(longstr2[52..63].trim());
 
     // ---- find no, ndot, nddot ----
     satrec.no /= xpdotp; //   rad/min
@@ -199,22 +151,30 @@ pub fn twoline2satrec(longstr1: &str, longstr2: &str) -> SatRec {
     );
 
     //  ---------------- initialize the orbit at sgp4epoch -------------------
-
-    // sgp4init(
-    //     &mut satrec,
-    //     Sgp4InitOptions {
-    //         opsmode,
-    //         satn: satrec.satnum as f64,
-    //         epoch: satrec.jdsatepoch - 2433281.5,
-    //         xbstar: satrec.bstar,
-    //         xecco: satrec.ecco,
-    //         xargpo: satrec.argpo,
-    //         xinclo: satrec.inclo,
-    //         xmo: satrec.mo,
-    //         xno: satrec.no,
-    //         xnodeo: satrec.nodeo,
-    //     },
-    // );
+    let satn = (satrec.satnum).parse::<f64>().unwrap();
+    let epoch = satrec.jdsatepoch - 2433281.5;
+    let xbstar = satrec.bstar;
+    let xecco = satrec.ecco;
+    let xargpo = satrec.argpo;
+    let xinclo = satrec.inclo;
+    let xmo = satrec.mo;
+    let xno = satrec.no;
+    let xnodeo = satrec.nodeo;
+    sgp4init(
+        &mut satrec,
+        Sgp4InitOptions {
+            opsmode,
+            satn: satn,
+            epoch,
+            xbstar,
+            xecco,
+            xargpo,
+            xinclo,
+            xmo,
+            xno,
+            xnodeo,
+        },
+    );
 
     satrec
 }
