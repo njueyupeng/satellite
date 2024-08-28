@@ -30,7 +30,7 @@ use crate::ext::jday_date;
  *    vallado       2004, 191, eq 3-45
  * --------------------------------------------------------------------------- */
 
-fn gstimeInternal(jdut1: f64) -> f64 {
+fn gstime_internal(jdut1: f64) -> f64 {
     let tut1 = (jdut1 - 2451545.0) / 36525.0;
 
     let mut temp = (-6.2e-6 * tut1 * tut1 * tut1)
@@ -48,10 +48,10 @@ fn gstimeInternal(jdut1: f64) -> f64 {
 }
 
 pub fn gstime(args: f64) -> f64 {
-    gstimeInternal(args)
+    gstime_internal(args)
 }
 
 pub fn gstime_date(datetime: DateTime<Utc>) -> f64 {
-    let jDay = jday_date(datetime);
-    gstimeInternal(jDay)
+    let j_day = jday_date(datetime);
+    gstime_internal(j_day)
 }

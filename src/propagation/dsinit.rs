@@ -79,7 +79,7 @@ use crate::constants::{PI, TWO_PI, X2O3, XKE};
 *    hoots, schumacher and glover 2004
 *    vallado, crawford, hujsak, kelso  2006
 ----------------------------------------------------------------------------*/
-
+#[derive(Debug)]
 pub struct DsInitOption {
     pub cosim: f64,
     pub argpo: f64,
@@ -153,6 +153,7 @@ pub struct DsInitOption {
     pub xli: f64,
     pub xni: f64,
 }
+#[derive(Debug, PartialEq)]
 pub struct DsInitResult {
     pub em: f64,
     pub argpm: f64,

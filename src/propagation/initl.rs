@@ -61,6 +61,7 @@ pub struct InitOptions {
     pub no: f64,
 }
 
+#[derive(PartialEq, Debug)]
 pub enum InitlMethod {
     N,
     D,

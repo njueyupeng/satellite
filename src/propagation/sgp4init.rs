@@ -664,7 +664,7 @@ pub fn sgp4init(satrec: &mut SatRec, options: Sgp4InitOptions) -> () {
         // if(satrec.error == 0)
     }
 
-    sgp4(satrec, 0.0);
+    let _ = sgp4(satrec, 0.0);
 
     satrec.init = DpperInit::N;
 }

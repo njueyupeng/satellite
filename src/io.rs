@@ -3,13 +3,12 @@ use std::i64;
 
 use crate::constants::{DEG2RAD, PI};
 use crate::ext::{days2mdhms, jday};
-use crate::propagation::sgp4init::{sgp4init, Sgp4InitOptions};
 use crate::types::{DpperOpsMode, SatRec};
 
-fn parseFloat(str: &str) -> f64 {
+fn parse_float(str: &str) -> f64 {
     return str.parse::<f64>().unwrap();
 }
-fn parseInt(str: &str) -> i64 {
+fn parse_int(str: &str) -> i64 {
     return str.parse::<i64>().unwrap();
 }
 
@@ -76,29 +75,31 @@ pub fn twoline2satrec(longstr1: &str, longstr2: &str) -> SatRec {
     let mut satrec = SatRec::new();
     satrec.error = 0;
 
-    // todo 有satnum这个属性值吗？
-    // satrec.satnum = longstr1.substring(2, 7); todo
-    // if let Some(subString)=longstr1.get(2..7) {
-    //     satrec.satnum=subString
-    // }
+    // satrec.satnum = longstr1[2..7].trim();
 
-    // let epochyr = parseInt(longstr1.substring(18, 20), 10);
+    satrec.satnum = if let Some(sub_string) = longstr1.get(2..7) {
+        String::from(sub_string)
+    } else {
+        String::from("")
+    };
+
+    // let epochyr = parse_int(longstr1.substring(18, 20), 10);
 
     // if let Some(substring) = longstr1.get(18..20) {
     //     // 尝试将子字符串解析为十进制整数
-    //     satrec.epochyr = parseInt(substring)
+    //     satrec.epochyr = parse_int(substring)
     // } else {
     //     eprintln!("Substring range is out of bounds");
     // }
 
     // if let Some(substring) = longstr1.get(20..32) {
-    //     satrec.epochdays = parseFloat(substring)
+    //     satrec.epochdays = parse_float(substring)
     // } else {
     //     eprintln!("Substring range is out of bounds");
     // }
 
     // if let Some(substring) = longstr1.get(33..43) {
-    //     satrec.ndot = parseFloat(substring)
+    //     satrec.ndot = parse_float(substring)
     // } else {
     //     eprintln!("Substring range is out of bounds");
     // }
@@ -106,7 +107,7 @@ pub fn twoline2satrec(longstr1: &str, longstr2: &str) -> SatRec {
     // if let Some(substring) = longstr1.get(40..50) {
     //     if let Some(substring2) = longstr1.get(50..52) {
     //         satrec.nddot =
-    //             String::from(".") + parseInt(substring).to_string().as_str() + "E" + substring2;
+    //             String::from(".") + parse_int(substring).to_string().as_str() + "E" + substring2;
     //     } else {
     //         eprintln!("Substring range is out of bounds");
     //     }
@@ -118,10 +119,10 @@ pub fn twoline2satrec(longstr1: &str, longstr2: &str) -> SatRec {
     // if let Some(substring) = longstr1.get(53..54) {
     //     if let Some(substring2) = longstr1.get(54..59) {
     //         if let Some(substring3) = longstr1.get(59..61) {
-    //             satrec.bstar = parseFloat(
+    //             satrec.bstar = parse_float(
     //                 String::from(substring).as_str()
     //                     + "."
-    //                     + parseInt(substring2).to_string().as_str(),
+    //                     + parse_int(substring2).to_string().as_str(),
     //             )
     //         } else {
     //             eprintln!("Substring range is out of bounds");
@@ -134,8 +135,8 @@ pub fn twoline2satrec(longstr1: &str, longstr2: &str) -> SatRec {
     // }
 
     // todo
-    // satrec.bstar = parseFloat(
-    //   `${longstr1.substring(53, 54)}.${parseInt(
+    // satrec.bstar = parse_float(
+    //   `${longstr1.substring(53, 54)}.${parse_int(
     //     longstr1.substring(54, 59),
     //     10,
     //   )}E${longstr1.substring(59, 61)}`,
@@ -143,12 +144,12 @@ pub fn twoline2satrec(longstr1: &str, longstr2: &str) -> SatRec {
 
     // satrec.satnum = longstr2.substring(2, 7);
     // todo
-    // satrec.inclo = parseFloat(longstr2.substring(8, 16));
-    // satrec.nodeo = parseFloat(longstr2.substring(17, 25));
-    // satrec.ecco = parseFloat(`.${longstr2.substring(26, 33)}`);
-    // satrec.argpo = parseFloat(longstr2.substring(34, 42));
-    // satrec.mo = parseFloat(longstr2.substring(43, 51));
-    // satrec.no = parseFloat(longstr2.substring(52, 63));
+    // satrec.inclo = parse_float(longstr2.substring(8, 16));
+    // satrec.nodeo = parse_float(longstr2.substring(17, 25));
+    // satrec.ecco = parse_float(`.${longstr2.substring(26, 33)}`);
+    // satrec.argpo = parse_float(longstr2.substring(34, 42));
+    // satrec.mo = parse_float(longstr2.substring(43, 51));
+    // satrec.no = parse_float(longstr2.substring(52, 63));
 
     // ---- find no, ndot, nddot ----
     satrec.no /= xpdotp; //   rad/min
@@ -174,7 +175,7 @@ pub fn twoline2satrec(longstr1: &str, longstr2: &str) -> SatRec {
     // ---------------- temp fix for years from 1957-2056 -------------------
     // --------- correct fix will occur when year is 4-digit in tle ---------
 
-    if (satrec.epochyr < 57) {
+    if satrec.epochyr < 57 {
         year = satrec.epochyr + 2000;
     } else {
         year = satrec.epochyr + 1900;

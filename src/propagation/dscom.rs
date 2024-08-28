@@ -246,17 +246,17 @@ pub fn dscom(options: DscomOption) -> DscomResult {
     const ZSINGS: f64 = -0.98088458;
 
     //  --------------------- local variables ------------------------
-    let mut nm = np;
-    let mut em = ep;
-    let mut snodm = nodep.sin();
-    let mut cnodm = nodep.cos();
-    let mut sinomm = argpp.sin();
-    let mut cosomm = argpp.cos();
-    let mut sinim = inclp.sin();
-    let mut cosim = inclp.cos();
-    let mut emsq = em * em;
-    let mut betasq = 1.0 - emsq;
-    let mut rtemsq = betasq.sqrt();
+    let nm = np;
+    let em = ep;
+    let snodm = nodep.sin();
+    let cnodm = nodep.cos();
+    let sinomm = argpp.sin();
+    let cosomm = argpp.cos();
+    let sinim = inclp.sin();
+    let cosim = inclp.cos();
+    let emsq = em * em;
+    let betasq = 1.0 - emsq;
+    let rtemsq = betasq.sqrt();
 
     //  ----------------- initialize lunar solar terms ---------------
     let peo = 0.0;

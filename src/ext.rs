@@ -122,7 +122,7 @@ pub fn days2mdhms(year: u32, days: f64) -> CustomDate {
  *    vallado       2007, 189, alg 14, ex 3-14
  *
  * --------------------------------------------------------------------------- */
-pub fn jdayInternal(
+pub fn jday_internal(
     year: f64,
     mon: f64,
     day: f64,
@@ -140,7 +140,7 @@ pub fn jdayInternal(
 
 pub fn jday(year: f64, mon: f64, day: f64, hr: f64, minute: f64, sec: f64, msec: f64) -> f64 {
     // todo
-    jdayInternal(year, mon, day, hr, minute, sec, msec)
+    jday_internal(year, mon, day, hr, minute, sec, msec)
 }
 
 pub fn jday_date(datetime: DateTime<Utc>) -> f64 {
@@ -155,7 +155,7 @@ pub fn jday_date(datetime: DateTime<Utc>) -> f64 {
     )
 }
 
-pub fn invjday(jd: f64, asArray: bool) {
+pub fn invjday(jd: f64, as_array: bool) {
     // --------------- find year and days of the year -
     let temp = jd - 2415019.5;
     let tu = temp / 365.25;
@@ -184,7 +184,7 @@ pub fn invjday(jd: f64, asArray: bool) {
     // let sec = mdhms.second - 0.00000086400;
 
     // todo
-    // if (asArray) {
+    // if (as_array) {
     //     return [year, mon, day, hr, minute, Math.floor(sec)];
     // }
 

@@ -138,7 +138,7 @@ pub fn sgp4(satrec: &mut SatRec, tsince: f64) -> Result<Sgp4Result, Sgp4Error> {
     // the old check used 1.0 + cos(pi-1.0e-9), but then compared it to
     // 1.5 e-12, so the threshold was changed to 1.5e-12 for consistency
 
-    const temp4: f64 = 1.5e-12;
+    const TEMP4: f64 = 1.5e-12;
 
     // --------------------- clear sgp4 error flag -----------------
     satrec.t = tsince;
@@ -312,7 +312,7 @@ pub fn sgp4(satrec: &mut SatRec, tsince: f64) -> Result<Sgp4Result, Sgp4Error> {
         if (cosip + 1.0).abs() > 1.5e-12 {
             satrec.xlcof = (-0.25 * J3OJ2 * sinip * (3.0 + (5.0 * cosip))) / (1.0 + cosip);
         } else {
-            satrec.xlcof = (-0.25 * J3OJ2 * sinip * (3.0 + (5.0 * cosip))) / temp4;
+            satrec.xlcof = (-0.25 * J3OJ2 * sinip * (3.0 + (5.0 * cosip))) / TEMP4;
         }
     }
 
