@@ -6,7 +6,7 @@
 [![Crates.io License](https://img.shields.io/crates/l/satellite)](https://crates.io/crates/satellite)
 [![Support WebAssembly](https://img.shields.io/badge/webAssembly-1)](https://crates.io/crates/satellite)
 
-A high-performance library to make satellite propagation via TLEs , powered by Rust. Provides the functions necessary for SGP4/SDP4 calculations. Also provides functions for coordinate transforms.
+A high-performance library for satellite propagation using TLEs and powered by Rust, inspired by [satellite-js#117](https://github.com/shashwatak/satellite-js/issues/117). Provides the functions necessary for SGP4/SDP4 calculations. Also provides functions for coordinate transforms.
 
 > 🚧 **Work in Progress**
 >
