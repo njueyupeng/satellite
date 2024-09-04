@@ -77,6 +77,7 @@ pub struct DscomOption {
     pub nodep: f64,
     pub np: f64,
 }
+
 pub struct DscomResult {
     pub snodm: f64,
     pub cnodm: f64,
@@ -161,7 +162,7 @@ pub struct DscomResult {
     pub zmos: f64,
 }
 
-pub fn dscom(options: DscomOption) -> DscomResult {
+pub fn dscom(options: &DscomOption) -> DscomResult {
     let epoch = options.epoch;
     let ep = options.ep;
     let tc = options.tc;

@@ -1,5 +1,5 @@
 use crate::constants::{PI, TWO_PI};
-use crate::types::{DpperInit, DpperOpsMode, SatRec};
+use crate::{DpperInit, DpperOpsMode, SatRec};
 
 pub struct DpperOption {
     pub init: DpperInit,
@@ -85,7 +85,6 @@ pub struct DpperResult {
 //     hoots, schumacher and glover 2004
 //     vallado, crawford, hujsak, kelso  2006
 // ----------------------------------------------------------------------------
-
 pub fn dpper(satrec: &SatRec, options: &DpperOption) -> DpperResult {
     let e3 = satrec.e3;
     let ee2 = satrec.ee2;

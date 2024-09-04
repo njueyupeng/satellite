@@ -38,9 +38,9 @@ npm install satellite.rs --save
 
 
 
-## todo
+<!-- ## todo -->
 
-- [ ] Rust
+<!-- - [ ] Rust
 - [ ] WebAssembly
 - [ ] TypeScript
 - [ ] Documentation
@@ -49,5 +49,5 @@ npm install satellite.rs --save
 - [ ] Changelog
 - [ ] Contributors
 - [ ] Donate
-- [ ] FAQ
+- [ ] FAQ -->
 

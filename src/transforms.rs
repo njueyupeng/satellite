@@ -1,8 +1,10 @@
 use crate::constants::{DEG2RAD, PI, RAD2DEG, TWO_PI};
 use crate::LookAngles;
-use crate::Position;
+use crate::GeodeticLocation;
 use crate::Topocentric;
-use crate::Vector3;
+use crate::EciVec3;
+use crate::EcfVec3;
+use crate::RangeErr;
 
 const A: f64 = 6378.137;
 const B: f64 = 6356.7523142;
@@ -17,35 +19,47 @@ pub fn degrees_to_radians(degree: f64) -> f64 {
     degree * DEG2RAD
 }
 
-pub fn degrees_lat(radians: f64) -> f64 {
+pub fn degrees_lat(radians: f64) -> Result<f64,RangeErr> {
     if radians < (-PI / 2.0) || radians > (PI / 2.0) {
-        panic!("Latitude radians must be in range [-pi/2; pi/2].")
+       return Err(RangeErr{
+            err:String::from("Latitude radians must be in range [-pi/2; pi/2].")
+        });
+
     }
-    radians_to_degrees(radians)
+    Ok(radians_to_degrees(radians))
+    
 }
 
-pub fn degrees_long(radians: f64) -> f64 {
+pub fn degrees_long(radians: f64) -> Result<f64,RangeErr> {
     if radians < (-PI) || radians > (PI) {
-        panic!("Latitude radians must be in range [-pi; pi].")
+        return Err(RangeErr{
+            err:String::from("Latitude radians must be in range [-pi; pi].")
+        });
     }
-    radians_to_degrees(radians)
+    Ok(radians_to_degrees(radians))
+    
 }
 
-pub fn radians_lat(degrees: f64) -> f64 {
+pub fn radians_lat(degrees: f64) -> Result<f64,RangeErr> {
     if degrees < (-90.0) || degrees > (90.0) {
-        panic!("Latitude degrees must be in range [-90; 90].")
+        return Err(RangeErr{
+            err:String::from("Latitude degrees must be in range [-90; 90].")
+        });
     }
-    degrees_to_radians(degrees)
+    Ok(degrees_to_radians(degrees))
 }
 
-pub fn radians_long(degrees: f64) -> f64 {
+pub fn radians_long(degrees: f64) -> Result<f64,RangeErr> {
     if degrees < (-180.0) || degrees > (180.0) {
-        panic!("Longitude degrees must be in range [-180; 180].")
+        
+        return Err(RangeErr{
+            err:String::from("Longitude degrees must be in range [-180; 180].")
+        });
     }
-    degrees_to_radians(degrees)
+    Ok(degrees_to_radians(degrees))
 }
 
-pub fn geodetic_to_ecf(geodetic: &Position) -> Vector3 {
+pub fn geodetic_to_ecf(geodetic: &GeodeticLocation) -> EcfVec3 {
     let latitude: f64 = geodetic.latitude;
     let longitude: f64 = geodetic.longitude;
     let height: f64 = geodetic.height;
@@ -56,10 +70,10 @@ pub fn geodetic_to_ecf(geodetic: &Position) -> Vector3 {
     let y = (normal + height) * latitude.cos() * longitude.sin();
     let z = ((normal * (1.0 - E2)) + height) * latitude.sin();
 
-    Vector3 { x, y, z }
+    EcfVec3 { x, y, z }
 }
 
-pub fn eci_to_geodetic(eci: &Vector3, gmst: f64) -> Position {
+pub fn eci_to_geodetic(eci: &EciVec3, gmst: f64) -> GeodeticLocation {
     // http://www.celestrak.com/columns/v02n03/
     let r: f64 = (eci.x * eci.x + eci.y * eci.y).sqrt();
     let mut longitude = eci.y.atan2(eci.x) - gmst;
@@ -84,14 +98,14 @@ pub fn eci_to_geodetic(eci: &Vector3, gmst: f64) -> Position {
     }
 
     let height = (r / latitude.cos()) - (A * c);
-    return Position {
-        longitude: longitude,
-        latitude: latitude,
-        height: height,
-    };
+     GeodeticLocation {
+        longitude,
+        latitude,
+        height,
+    }
 }
 
-pub fn ecf_to_eci(ecf: &Vector3, gmst: f64) -> Vector3 {
+pub fn ecf_to_eci(ecf: &EcfVec3, gmst: f64) -> EciVec3 {
     //
     // [X]     [C -S  0][X]
     // [Y]  =  [S  C  0][Y]
@@ -101,10 +115,10 @@ pub fn ecf_to_eci(ecf: &Vector3, gmst: f64) -> Vector3 {
     let y = ecf.x * gmst.sin() + ecf.y * gmst.cos();
     let z = ecf.z;
 
-    Vector3 { x, y, z }
+    EciVec3 { x, y, z }
 }
 
-pub fn eci_to_ecf(eci: &Vector3, gmst: f64) -> Vector3 {
+pub fn eci_to_ecf(eci: &EciVec3, gmst: f64) -> EcfVec3 {
     // ccar.colorado.edu/ASEN5070/handouts/coordsys.doc
     //
     // [X]     [C -S  0][X]
@@ -121,10 +135,10 @@ pub fn eci_to_ecf(eci: &Vector3, gmst: f64) -> Vector3 {
     let y = -eci.x * gmst.sin() + eci.y * gmst.cos();
     let z = eci.z;
 
-    Vector3 { x, y, z }
+    EcfVec3 { x, y, z }
 }
 
-pub fn topocentric(observer_geodetic: &Position, satellite_ecf: &Vector3) -> Topocentric {
+ fn topocentric(observer_geodetic: &GeodeticLocation, satellite_ecf: &EcfVec3) -> Topocentric {
     let latitude = observer_geodetic.latitude;
     let longitude = observer_geodetic.longitude;
     let observer_ecf = geodetic_to_ecf(observer_geodetic);
@@ -149,7 +163,7 @@ pub fn topocentric(observer_geodetic: &Position, satellite_ecf: &Vector3) -> Top
     }
 }
 
-pub fn topocentric_to_look_angles(tc: &Topocentric) -> LookAngles {
+ fn topocentric_to_look_angles(tc: &Topocentric) -> LookAngles {
     let top_s = tc.top_s;
     let top_e = tc.top_e;
     let top_z = tc.top_z;
@@ -165,7 +179,7 @@ pub fn topocentric_to_look_angles(tc: &Topocentric) -> LookAngles {
     }
 }
 
-pub fn ecf_to_look_angles(observer_geodetic: &Position, satellite_ecf: &Vector3) -> LookAngles {
+pub fn ecf_to_look_angles(observer_geodetic: &GeodeticLocation, satellite_ecf: &EcfVec3) -> LookAngles {
     let topocentric_coords = topocentric(observer_geodetic, satellite_ecf);
     topocentric_to_look_angles(&topocentric_coords)
 }

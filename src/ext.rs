@@ -9,6 +9,19 @@ pub struct CustomDate {
     pub second: u64,
 }
 
+
+pub fn is_leap_year(year:u32)->bool {
+    if year % 4 == 0 {
+      if year % 100 == 0 {
+        if year % 400 == 0 {
+          return true;
+        }
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
 /* -----------------------------------------------------------------------------
  *
  *                           procedure days2mdhms
@@ -31,7 +44,7 @@ pub struct CustomDate {
  *  outputs       :
  *    mon         - month                          1 .. 12
  *    day         - day                            1 .. 28,29,30,31
- *    hr          - hour                           0 .. 23
+ *    hour          - hour                           0 .. 23
  *    min         - minute                         0 .. 59
  *    sec         - second                         0.0 .. 59.999
  *
@@ -48,7 +61,7 @@ pub struct CustomDate {
 pub fn days2mdhms(year: u32, days: f64) -> CustomDate {
     let lmonth = [
         31,
-        if (year % 4) == 0 { 29 } else { 28 },
+        if is_leap_year(year) { 29 } else { 28 },
         31,
         30,
         31,
@@ -61,21 +74,21 @@ pub fn days2mdhms(year: u32, days: f64) -> CustomDate {
         31,
     ];
 
-    let dayofyr = days.floor() as f64;
+    let dayofyr = days.floor() as u64;
 
     //  ----------------- find month and day of month ----------------
     let mut i = 1;
     let mut inttemp = 0;
-    while (dayofyr > (inttemp as f64 + lmonth[i - 1] as f64)) && i < 12 {
+    while (dayofyr > (inttemp  + lmonth[i - 1])) && i < 12 {
         inttemp += lmonth[i - 1];
         i += 1;
     }
 
     let month: u64 = i as u64;
-    let day = dayofyr as u64 - inttemp as u64;
+    let day = dayofyr- inttemp ;
 
     //  ----------------- find hours minutes and seconds -------------
-    let mut temp = (days - dayofyr) * 24.0;
+    let mut temp = (days - dayofyr as f64) * 24.0;
     let hour = (temp).floor() as u64;
     temp = (temp - hour as f64) * 60.0;
     let minute = (temp).floor() as u64;
@@ -105,7 +118,7 @@ pub fn days2mdhms(year: u32, days: f64) -> CustomDate {
  *    year        - year                           1900 .. 2100
  *    mon         - month                          1 .. 12
  *    day         - day                            1 .. 28,29,30,31
- *    hr          - universal time hour            0 .. 23
+ *    hour          - universal time hour            0 .. 23
  *    min         - universal time min             0 .. 59
  *    sec         - universal time sec             0.0 .. 59.999
  *
@@ -126,7 +139,7 @@ pub fn jday_internal(
     year: f64,
     mon: f64,
     day: f64,
-    hr: f64,
+    hour: f64,
     minute: f64,
     sec: f64,
     msec: f64,
@@ -135,12 +148,12 @@ pub fn jday_internal(
         + ((275.0 * mon) / 9.0).floor()
         + day
         + 1721013.5
-        + (((((msec / 60000.0) + (sec / 60.0) + minute) / 60.0) + hr) / 24.0)
+        + (((((msec / 60000.0) + (sec / 60.0) + minute) / 60.0) + hour) / 24.0)
 }
 
-pub fn jday(year: f64, mon: f64, day: f64, hr: f64, minute: f64, sec: f64, msec: f64) -> f64 {
+pub fn jday(year: f64, mon: f64, day: f64, hour: f64, minute: f64, sec: f64, msec: f64) -> f64 {
     // todo
-    jday_internal(year, mon, day, hr, minute, sec, msec)
+    jday_internal(year, mon, day, hour, minute, sec, msec)
 }
 
 pub fn jday_date(datetime: DateTime<Utc>) -> f64 {
@@ -155,38 +168,38 @@ pub fn jday_date(datetime: DateTime<Utc>) -> f64 {
     )
 }
 
-pub fn invjday(jd: f64, as_array: bool) {
-    // --------------- find year and days of the year -
-    let temp = jd - 2415019.5;
-    let tu = temp / 365.25;
-    let mut year = 1900.0 + (tu).floor();
-    let mut leapyrs = ((year - 1901.0) * 0.25).floor();
+// pub fn invjday(jd: f64, as_array: bool) {
+//     // --------------- find year and days of the year -
+//     let temp = jd - 2415019.5;
+//     let tu = temp / 365.25;
+//     let mut year = 1900.0 + (tu).floor();
+//     let mut leapyrs = ((year - 1901.0) * 0.25).floor();
 
-    // optional nudge by 8.64x10-7 sec to get even outputs
-    let mut days = (temp - (((year - 1900.0) * 365.0) + leapyrs)) + 0.00000000001;
+//     // optional nudge by 8.64x10-7 sec to get even outputs
+//     let mut days = (temp - (((year - 1900.0) * 365.0) + leapyrs)) + 0.00000000001;
 
-    // ------------ check for case of beginning of a year -----------
-    if days < 1.0 {
-        year -= 1.0;
-        leapyrs = ((year - 1901.0) * 0.25).floor();
-        days = temp - (((year - 1900.0) * 365.0) + leapyrs);
-    }
+//     // ------------ check for case of beginning of a year -----------
+//     if days < 1.0 {
+//         year -= 1.0;
+//         leapyrs = ((year - 1901.0) * 0.25).floor();
+//         days = temp - (((year - 1900.0) * 365.0) + leapyrs);
+//     }
 
-    // ----------------- find remaing data  -------------------------
-    let mdhms = days2mdhms(year as u32, days as f64);
+//     // ----------------- find remaing data  -------------------------
+//     let mdhms = days2mdhms(year as u32, days as f64);
 
-    let mon = mdhms.month;
-    let day = mdhms.day;
-    let hr = mdhms.hour;
-    let minute = mdhms.minute;
+//     let mon = mdhms.month;
+//     let day = mdhms.day;
+//     let hour = mdhms.hour;
+//     let minute = mdhms.minute;
 
-    // todo
-    // let sec = mdhms.second - 0.00000086400;
+  
+//     let sec = mdhms.second as f64 - 0.00000086400;
 
-    // todo
-    // if (as_array) {
-    //     return [year, mon, day, hr, minute, Math.floor(sec)];
-    // }
+//     // todo
+//     if (as_array) {
+//         return [year, mon as f64, day as f64, hour as f64, minute as f64, sec.floor()];
+//     }
 
-    // return new Date(Date.UTC(year, mon - 1, day, hr, minute, Math.floor(sec)));
-}
+//     // return new Date(Date.UTC(year, mon - 1, day, hour, minute, Math.floor(sec)));
+// }

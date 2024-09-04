@@ -184,7 +184,7 @@ pub fn dspace(options: DspaceOption) -> DspaceResult {
     let mut xldot = 0.0;
     let mut xnddt = 0.0;
     let mut xndt = 0.0;
-    let mut xomi = 0.0;
+    let mut xomi ;
     let mut dndt = 0.0;
     let mut ft = 0.0;
 

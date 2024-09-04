@@ -1,10 +1,9 @@
 use core::str;
-use std::i64;
 
 use crate::constants::{DEG2RAD, PI};
 use crate::ext::{days2mdhms, jday};
 use crate::propagation::sgp4init::{sgp4init, Sgp4InitOptions};
-use crate::types::{DpperOpsMode, SatRec};
+use crate::{DpperOpsMode, SatRec};
 
 fn parse_float(str: &str) -> f64 {
     return str.parse::<f64>().unwrap();
@@ -71,7 +70,7 @@ fn parse_int(str: &str) -> u32 {
 pub fn twoline2satrec(longstr1: &str, longstr2: &str) -> SatRec {
     let opsmode = DpperOpsMode::I;
     let xpdotp = 1440.0 / (2.0 * PI); // 229.1831180523293;
-    let mut year = 0;
+    let  year;
 
     let mut satrec = SatRec::new();
     satrec.error = 0;
@@ -84,16 +83,16 @@ pub fn twoline2satrec(longstr1: &str, longstr2: &str) -> SatRec {
     let temp2 = parse_float(longstr1[50..52].trim());
     satrec.nddot =
         parse_float(&(String::from("0.") + &temp.to_string() + "E" + &temp2.to_string()));
-    let bsTemp1 = parse_int(longstr1[53..54].trim());
-    let bsTemp2 = parse_int(longstr1[54..59].trim());
-    let bsTemp3 = parse_int(longstr1[59..61].trim());
+    let bs_temp1 = parse_int(longstr1[53..54].trim());
+    let bs_temp2 = parse_int(longstr1[54..59].trim());
+    let bs_temp3 = parse_int(longstr1[59..61].trim());
     satrec.bstar = parse_float(
         &(String::from("")
-            + &bsTemp1.to_string()
+            + &bs_temp1.to_string()
             + "."
-            + &bsTemp2.to_string()
+            + &bs_temp2.to_string()
             + "E"
-            + &bsTemp3.to_string()),
+            + &bs_temp3.to_string()),
     );
 
     satrec.inclo = parse_float(longstr2[8..16].trim());

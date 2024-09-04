@@ -3,9 +3,9 @@ use crate::propagation::{
     dpper::{dpper, DpperOption},
     dspace::{dspace, DspaceOption},
 };
-use crate::types::DpperInit;
-use crate::types::SatRec;
-use crate::Vector3;
+use crate::DpperInit;
+use crate::SatRec;
+use crate::EciVec3;
 
 pub enum Sgp4Error {
     FF,
@@ -13,8 +13,8 @@ pub enum Sgp4Error {
 }
 
 pub struct Sgp4Result {
-    position: Vector3,
-    velocity: Vector3,
+    position: EciVec3,
+    velocity: EciVec3,
 }
 
 /*----------------------------------------------------------------------------
@@ -412,12 +412,12 @@ pub fn sgp4(satrec: &mut SatRec, tsince: f64) -> Result<Sgp4Result, Sgp4Error> {
     let vz = sini * cossu;
 
     // --------- position and velocity (in km and km/sec) ----------
-    let r = Vector3 {
+    let r = EciVec3 {
         x: (mrt * ux) * EARTH_RADIUS,
         y: (mrt * uy) * EARTH_RADIUS,
         z: (mrt * uz) * EARTH_RADIUS,
     };
-    let v = Vector3 {
+    let v = EciVec3 {
         x: ((mvt * ux) + (rvdot * vx)) * VKMPERSEC,
         y: ((mvt * uy) + (rvdot * vy)) * VKMPERSEC,
         z: ((mvt * uz) + (rvdot * vz)) * VKMPERSEC,

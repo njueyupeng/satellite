@@ -1,4 +1,4 @@
-use crate::Vector3;
+use crate::EciVec3;
 
 fn sign(value: f64) -> f64 {
     if value >= 0.0 {
@@ -8,17 +8,17 @@ fn sign(value: f64) -> f64 {
     }
 }
 // 计算多普勒因子
-pub fn doppler_factor(location: &Vector3, position: &Vector3, velocity: &Vector3) -> f64 {
+pub fn doppler_factor(location: &EciVec3, position: &EciVec3, velocity: &EciVec3) -> f64 {
     const M_FACTOR: f64 = 7.292115E-5; // 地球自转角速度
     const LIGHT_SPEED: f64 = 299792.458; // 光速 km/s
 
-    let range = Vector3 {
+    let range = EciVec3 {
         x: position.x - location.x,
         y: position.y - location.y,
         z: position.z - location.z,
     };
     let range_w = (range.x.powi(2) + range.y.powi(2) + range.z.powi(2)).sqrt();
-    let range_vel = Vector3 {
+    let range_vel = EciVec3 {
         x: velocity.x + M_FACTOR * location.y,
         y: velocity.y - M_FACTOR * location.x,
         z: velocity.z,
@@ -36,17 +36,17 @@ mod tests {
 
     #[test]
     fn test_doppler_factor_without_observer_movement() {
-        let observer_ecf = Vector3 {
+        let observer_ecf = EciVec3 {
             x: 0.0,
             y: 0.0,
             z: EARTH_RADIUS,
         };
-        let position_ecf = Vector3 {
+        let position_ecf = EciVec3 {
             x: 0.0,
             y: 0.0,
             z: EARTH_RADIUS + 500.0,
         };
-        let velocity_ecf = Vector3 {
+        let velocity_ecf = EciVec3 {
             x: 7.91,
             y: 0.0,
             z: 0.0,

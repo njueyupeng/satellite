@@ -6,8 +6,7 @@ use crate::propagation::{
     initl::{initl, InitOptions},
     sgp4::sgp4,
 };
-use crate::types::{DpperInit, DpperOpsMode, SatRec};
-
+use crate::{DpperInit, DpperOpsMode, SatRec};
 pub struct Sgp4InitOptions {
     pub opsmode: DpperOpsMode,
     pub satn: f64,
@@ -35,7 +34,7 @@ pub struct Sgp4InitOptions {
 *    satn        - satellite number
 *    bstar       - sgp4 type drag coefficient              kg/m2er
 *    ecco        - eccentricity
-*    epoch       - epoch time in days from jan 0, 1950. 0 hr
+*    epoch       - epoch time in days from jan 0, 1950. 0 hour
 *    argpo       - argument of perigee (output if ds)
 *    inclo       - inclination
 *    mo          - mean anomaly (output if ds)
@@ -105,7 +104,7 @@ pub struct Sgp4InitOptions {
 
 pub fn sgp4init(satrec: &mut SatRec, options: Sgp4InitOptions) -> () {
     let opsmode = options.opsmode;
-    let satn = options.satn;
+    let satn:f64;
     let epoch = options.epoch;
     let xbstar = options.xbstar;
     let xecco = options.xecco;
@@ -441,7 +440,7 @@ pub fn sgp4init(satrec: &mut SatRec, options: Sgp4InitOptions) -> () {
                 np: satrec.no,
             };
 
-            let dscom_result = dscom(dscom_option);
+            let dscom_result = dscom(&dscom_option);
 
             satrec.e3 = dscom_result.e3;
             satrec.ee2 = dscom_result.ee2;
