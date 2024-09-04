@@ -9,7 +9,7 @@ fn parse_float(str: &str) -> f64 {
     return str.parse::<f64>().unwrap();
 }
 fn parse_int(str: &str) -> u32 {
-    return str.parse::<u32>().unwrap();
+    return str.parse::<u32>().unwrap_or(0);
 }
 
 /* -----------------------------------------------------------------------------
