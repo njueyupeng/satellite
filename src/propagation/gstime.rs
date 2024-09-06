@@ -50,7 +50,7 @@ fn gstime_internal(jdut1: f64) -> f64 {
 pub fn gstime(args: f64) -> f64 {
     gstime_internal(args)
 }
-
+#[allow(dead_code)]
 pub fn gstime_date(datetime: DateTime<Utc>) -> f64 {
     let j_day = jday_date(datetime);
     gstime_internal(j_day)

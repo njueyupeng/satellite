@@ -56,7 +56,7 @@ pub struct Topocentric {
     top_e: f64,
     top_z: f64,
 }
-
+#[allow(dead_code)]
 pub struct LookAngles {
     azimuth: f64,
     elevation: f64,
@@ -312,7 +312,7 @@ pub enum DpperInit {
     Y,
     N,
 }
-
+#[allow(dead_code)]
 pub struct RangeErr{
     err:String
 }

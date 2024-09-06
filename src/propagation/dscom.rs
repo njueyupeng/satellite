@@ -78,6 +78,7 @@ pub struct DscomOption {
     pub np: f64,
 }
 
+#[allow(dead_code)]
 pub struct DscomResult {
     pub snodm: f64,
     pub cnodm: f64,

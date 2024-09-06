@@ -11,7 +11,7 @@ pub enum Sgp4Error {
     FF,
     FpFv,
 }
-
+#[allow(dead_code)]
 pub struct Sgp4Result {
     position: EciVec3,
     velocity: EciVec3,

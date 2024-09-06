@@ -39,6 +39,7 @@ pub struct DspaceOption {
     pub nm: f64,
 }
 
+#[allow(dead_code)]
 pub struct DspaceResult {
     pub atime: f64,
     pub em: f64,

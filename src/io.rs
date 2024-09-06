@@ -8,8 +8,8 @@ use crate::{DpperOpsMode, SatRec};
 fn parse_float(str: &str) -> f64 {
     return str.parse::<f64>().unwrap();
 }
-fn parse_int(str: &str) -> u32 {
-    return str.parse::<u32>().unwrap_or(0);
+fn parse_int(str: &str) -> i32 {
+    return str.parse::<i32>().unwrap_or(0);
 }
 
 /* -----------------------------------------------------------------------------
@@ -76,28 +76,24 @@ pub fn twoline2satrec(longstr1: &str, longstr2: &str) -> SatRec {
     satrec.error = 0;
 
     satrec.satnum = String::from(longstr1[2..7].trim());
-    satrec.epochyr = parse_int(longstr1[18..20].trim());
+    satrec.epochyr = parse_int(longstr1[18..20].trim()) as u32;
     satrec.epochdays = parse_float(longstr1[20..32].trim());
     satrec.ndot = parse_float(longstr1[33..43].trim());
     let temp = parse_int(longstr1[44..50].trim());
     let temp2 = parse_float(longstr1[50..52].trim());
+    let nddot_str = format!("{}.{}E{}",0,&temp.to_string(),&temp2.to_string());
     satrec.nddot =
-        parse_float(&(String::from("0.") + &temp.to_string() + "E" + &temp2.to_string()));
+        parse_float(&nddot_str);
     let bs_temp1 = parse_int(longstr1[53..54].trim());
     let bs_temp2 = parse_int(longstr1[54..59].trim());
     let bs_temp3 = parse_int(longstr1[59..61].trim());
-    satrec.bstar = parse_float(
-        &(String::from("")
-            + &bs_temp1.to_string()
-            + "."
-            + &bs_temp2.to_string()
-            + "E"
-            + &bs_temp3.to_string()),
-    );
+    let bstar_str = format!("{}.{}E{}",bs_temp1,bs_temp2,bs_temp3);
+    satrec.bstar = parse_float(&bstar_str);
 
     satrec.inclo = parse_float(longstr2[8..16].trim());
     satrec.nodeo = parse_float(longstr2[17..25].trim());
-    satrec.ecco = parse_float(longstr2[26..33].trim());
+    let ecco_str = format!("0.{}",longstr2[26..33].trim());
+    satrec.ecco = parse_float(&ecco_str);
     satrec.argpo = parse_float(longstr2[34..42].trim());
     satrec.mo = parse_float(longstr2[43..51].trim());
     satrec.no = parse_float(longstr2[52..63].trim());

@@ -80,6 +80,7 @@ use crate::constants::{PI, TWO_PI, X2O3, XKE};
 *    vallado, crawford, hujsak, kelso  2006
 ----------------------------------------------------------------------------*/
 #[derive(Debug)]
+#[allow(dead_code)]
 pub struct DsInitOption {
     pub cosim: f64,
     pub argpo: f64,

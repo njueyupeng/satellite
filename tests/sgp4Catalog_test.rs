@@ -1,8 +1,9 @@
-use satellite;
+// use satellite;
 use std::fs;
 use std::path::Path;
 
-fn getTleSuites() {
+// todo 
+fn get_tle_suites() {
     let path = Path::new("./tests/tle.txt");
     let contents = fs::read_to_string(path).expect("Unable to read file");
     let lines: Vec<&str> = contents.lines().collect();
@@ -12,5 +13,5 @@ fn getTleSuites() {
 
 #[test]
 pub fn sgp4catalog() {
-    getTleSuites()
+    get_tle_suites()
 }

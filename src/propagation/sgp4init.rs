@@ -7,6 +7,7 @@ use crate::propagation::{
     sgp4::sgp4,
 };
 use crate::{DpperInit, DpperOpsMode, SatRec};
+#[allow(dead_code)]
 pub struct Sgp4InitOptions {
     pub opsmode: DpperOpsMode,
     pub satn: f64,
@@ -104,7 +105,7 @@ pub struct Sgp4InitOptions {
 
 pub fn sgp4init(satrec: &mut SatRec, options: Sgp4InitOptions) -> () {
     let opsmode = options.opsmode;
-    let satn:f64;
+    let _satn:f64;
     let epoch = options.epoch;
     let xbstar = options.xbstar;
     let xecco = options.xecco;

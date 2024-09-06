@@ -62,11 +62,13 @@ pub struct InitOptions {
 }
 
 #[derive(PartialEq, Debug)]
+#[allow(dead_code)]
 pub enum InitlMethod {
     N,
     D,
 }
 
+#[allow(dead_code)]
 pub struct InitlResult {
     pub no: f64,
 
