@@ -45,7 +45,7 @@ satellite = "0.1"
 ```javascript
 import * as satellite from "satellite-pro";
 
-const tleLine1 = "1 44714C 19074B   24257.74770833  .00012054  00000+0  80755-3 0  2576",
+const tleLine1 = "1 44714C 19074B   24257.74770833  .00012054  00000+0  80755-3 0  2576";
 const tleLine2 = "2 44714  53.0541  99.4927 0001373  86.0479  80.2511 15.06391223    18";
 
 const satrec = satellite.twoline2satrec(tleLine1, tleLine2);
