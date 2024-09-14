@@ -5,7 +5,7 @@
         "Yu Peng <1196194875@qq.com>"
     ],
     "description": "Modular set of functions for SGP4 and SDP4 propagation of TLEs.",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "license": "MIT",
     "files": [
         "./index.js",
@@ -22,5 +22,19 @@
     ],
     "scripts": {
         "build": "wasm-pack build --target bundler"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/njueyupeng/satellite"
+    },
+    "keywords": [
+        "sgp4",
+        "satellite",
+        "wasm",
+        "rust",
+        "webAssembly"
+    ],
+    "bugs": {
+        "url": "https://github.com/njueyupeng/satellite/issues"
     }
 }
