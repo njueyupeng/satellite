@@ -1,4 +1,6 @@
 use core::str;
+extern crate wasm_bindgen;
+use wasm_bindgen::prelude::*;
 
 use crate::constants::{DEG2RAD, PI};
 use crate::ext::{days2mdhms, jday};
@@ -67,10 +69,11 @@ fn parse_int(str: &str) -> i32 {
  * to the algorithm.  If you want to turn some of these off and go
  * back into "afspc" mode, then set `afspc_mode` to `True`.
  */
+#[wasm_bindgen]
 pub fn twoline2satrec(longstr1: &str, longstr2: &str) -> SatRec {
     let opsmode = DpperOpsMode::I;
     let xpdotp = 1440.0 / (2.0 * PI); // 229.1831180523293;
-    let  year;
+    let year;
 
     let mut satrec = SatRec::new();
     satrec.error = 0;
@@ -81,18 +84,17 @@ pub fn twoline2satrec(longstr1: &str, longstr2: &str) -> SatRec {
     satrec.ndot = parse_float(longstr1[33..43].trim());
     let temp = parse_int(longstr1[44..50].trim());
     let temp2 = parse_float(longstr1[50..52].trim());
-    let nddot_str = format!("{}.{}E{}",0,&temp.to_string(),&temp2.to_string());
-    satrec.nddot =
-        parse_float(&nddot_str);
+    let nddot_str = format!("{}.{}E{}", 0, &temp.to_string(), &temp2.to_string());
+    satrec.nddot = parse_float(&nddot_str);
     let bs_temp1 = parse_int(longstr1[53..54].trim());
     let bs_temp2 = parse_int(longstr1[54..59].trim());
     let bs_temp3 = parse_int(longstr1[59..61].trim());
-    let bstar_str = format!("{}.{}E{}",bs_temp1,bs_temp2,bs_temp3);
+    let bstar_str = format!("{}.{}E{}", bs_temp1, bs_temp2, bs_temp3);
     satrec.bstar = parse_float(&bstar_str);
 
     satrec.inclo = parse_float(longstr2[8..16].trim());
     satrec.nodeo = parse_float(longstr2[17..25].trim());
-    let ecco_str = format!("0.{}",longstr2[26..33].trim());
+    let ecco_str = format!("0.{}", longstr2[26..33].trim());
     satrec.ecco = parse_float(&ecco_str);
     satrec.argpo = parse_float(longstr2[34..42].trim());
     satrec.mo = parse_float(longstr2[43..51].trim());

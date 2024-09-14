@@ -1,0 +1,26 @@
+{
+    "name": "satellite-pro",
+    "type": "module",
+    "collaborators": [
+        "Yu Peng <1196194875@qq.com>"
+    ],
+    "description": "Modular set of functions for SGP4 and SDP4 propagation of TLEs.",
+    "version": "0.0.1",
+    "license": "MIT",
+    "files": [
+        "./index.js",
+        "./pkg/satellite_bg.wasm",
+        "./pkg/satellite.js",
+        "./pkg/satellite_bg.js",
+        "./pkg/satellite.d.ts"
+    ],
+    "main": "index.js",
+    "types": "./pkg/satellite.d.ts",
+    "sideEffects": [
+        "./pkg/satellite.js",
+        "./pkg/snippets/*"
+    ],
+    "scripts": {
+        "build": "wasm-pack build --target bundler"
+    }
+}

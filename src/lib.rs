@@ -1,72 +1,69 @@
 //! # Satellite
 //!
 //! Modular set of functions for SGP4 and SDP4 propagation of TLEs.
+extern crate wasm_bindgen;
+use std::collections::HashMap;
+use wasm_bindgen::prelude::*;
 pub mod constants;
-mod transforms;
+use serde::{Deserialize, Serialize};
+
 mod doppler_factor;
 mod ext;
 mod io;
 mod propagation;
-pub use propagation::{
-    propagate::{
-        propagate,
-        propagate_date
-    },
-    sgp4::sgp4,
-    gstime::gstime
-};
+mod transforms;
+pub use ext::{jday, jday_date};
 pub use io::twoline2satrec;
-pub use ext::{
-    jday,
-    jday_date
+pub use propagation::{
+    gstime::gstime,
+    propagate::{propagate, propagate_date},
+    sgp4::{sgp4, Sgp4Error, Sgp4Result},
 };
+
 pub use doppler_factor::doppler_factor;
 
 pub use transforms::{
-    radians_to_degrees,
-    degrees_to_radians,
-    degrees_lat,
-    degrees_long,
-    radians_lat,
-    radians_long,
-    geodetic_to_ecf,
-    eci_to_geodetic,
-    ecf_to_eci,
-    eci_to_ecf,
-    ecf_to_look_angles,
+    degrees_lat, degrees_long, degrees_to_radians, ecf_to_eci, ecf_to_look_angles, eci_to_ecf,
+    eci_to_geodetic, geodetic_to_ecf, radians_lat, radians_long, radians_to_degrees,
 };
+#[wasm_bindgen]
+#[derive(Serialize, Deserialize)]
 pub struct EciVec3 {
     pub x: f64,
     pub y: f64,
     pub z: f64,
 }
-pub struct EcfVec3{
+#[wasm_bindgen]
+pub struct EcfVec3 {
     pub x: f64,
     pub y: f64,
     pub z: f64,
 }
+#[wasm_bindgen]
 pub struct GeodeticLocation {
     pub longitude: f64,
     pub latitude: f64,
     pub height: f64,
 }
 
+#[wasm_bindgen]
 pub struct Topocentric {
     top_s: f64,
     top_e: f64,
     top_z: f64,
 }
 #[allow(dead_code)]
+#[wasm_bindgen]
 pub struct LookAngles {
     azimuth: f64,
     elevation: f64,
     range_sat: f64,
 }
 
-
 /// Satellite record containing description of orbit.
 
 #[derive(Clone, Debug)]
+#[wasm_bindgen]
 pub struct SatRec {
     // near earth variables
     pub isimp: u32,
@@ -126,7 +123,7 @@ pub struct SatRec {
     pub dnodt: f64,
     pub domdt: f64,
     /// Unique satellite number given in the TLE file.
-    pub satnum: String,
+    satnum: String,
     pub e3: f64,
     pub ee2: f64,
     pub peo: f64,
@@ -180,8 +177,8 @@ pub struct SatRec {
     pub no: f64,
     /// Right ascension of ascending node in radians.
     pub nodeo: f64,
-    pub operationmode: DpperOpsMode, // todo 考虑改为非枚举值
-    pub init: DpperInit,             // todo 考虑改为非枚举值
+    operationmode: DpperOpsMode,
+    init: DpperInit,
 
     pub a: f64,
     pub alta: f64,
@@ -190,6 +187,7 @@ pub struct SatRec {
     pub error: u32,
 }
 
+#[wasm_bindgen]
 impl SatRec {
     pub fn new() -> SatRec {
         SatRec {
@@ -298,6 +296,28 @@ impl SatRec {
             error: 0,
         }
     }
+
+    #[wasm_bindgen(getter)]
+    pub fn satnum(&self) -> String {
+        self.satnum.clone()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn operationmode(&self) -> char {
+        match self.operationmode {
+            DpperOpsMode::A => 'a',
+            DpperOpsMode::I => 'i',
+            _ => 'i',
+        }
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn init(&self) -> char {
+        match self.init {
+            DpperInit::Y => 'y',
+            DpperInit::N => 'n',
+        }
+    }
 }
 
 #[derive(PartialEq, Clone, Debug)]
@@ -313,6 +333,39 @@ pub enum DpperInit {
     N,
 }
 #[allow(dead_code)]
-pub struct RangeErr{
-    err:String
+#[wasm_bindgen]
+pub struct RangeErr {
+    err: String,
+}
+
+//  wasm-bridger
+
+// #[wasm_bindgen]
+// pub fn twoline2satrec(line1:&str,line2:&str)->SatRec{
+//   _twoline2satrec(line1,line2)
+// }
+
+#[wasm_bindgen]
+pub fn get_constants() -> JsValue {
+    let mut map = HashMap::new();
+
+    map.insert("pi", constants::PI);
+    map.insert("twoPi", constants::TWO_PI);
+    map.insert("deg2rad", constants::DEG2RAD);
+    map.insert("rad2deg", constants::RAD2DEG);
+    map.insert("minutesPerDay", constants::MINUTES_PER_DAY);
+    map.insert("mu", constants::MU);
+    map.insert("earthRadius", constants::EARTH_RADIUS);
+    map.insert("xke", constants::XKE);
+    map.insert("vkmpersec", constants::VKMPERSEC);
+    map.insert("tumin", constants::TUMIN);
+    map.insert("j2", constants::J2);
+    map.insert("j3", constants::J3);
+    map.insert("j4", constants::J4);
+    map.insert("j3oj2", constants::J3OJ2);
+    map.insert("x2o3", constants::X2O3);
+
+    // 将HashMap序列化为JSON字符串
+    let json_str = serde_json::to_string(&map).unwrap();
+    JsValue::from_str(&json_str)
 }

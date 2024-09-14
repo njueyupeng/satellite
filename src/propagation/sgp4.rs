@@ -1,17 +1,32 @@
+
+use wasm_bindgen::prelude::*;
+use serde_wasm_bindgen::to_value;
 use crate::constants::{EARTH_RADIUS, J2, J3OJ2, PI, TWO_PI, VKMPERSEC, X2O3, XKE};
 use crate::propagation::{
     dpper::{dpper, DpperOption},
     dspace::{dspace, DspaceOption},
 };
+use serde::{Serialize, Deserialize};
 use crate::DpperInit;
 use crate::SatRec;
 use crate::EciVec3;
 
+
+
+#[derive(Serialize, Deserialize)]
 pub enum Sgp4Error {
     FF,
     FpFv,
 }
+
+impl Into<JsValue> for Sgp4Error {
+    fn into(self) -> JsValue {
+        to_value(&self).unwrap()
+    }
+}
 #[allow(dead_code)]
+
+#[derive(Serialize, Deserialize)]
 pub struct Sgp4Result {
     position: EciVec3,
     velocity: EciVec3,
@@ -427,4 +442,13 @@ pub fn sgp4(satrec: &mut SatRec, tsince: f64) -> Result<Sgp4Result, Sgp4Error> {
         position: r,
         velocity: v,
     });
+}
+
+#[wasm_bindgen(js_name = "sgp4")]
+pub fn js_sgp4(satrec: &mut SatRec, tsince: f64)->Result<JsValue, JsValue> {
+    let result = sgp4(satrec, tsince);
+    match result {
+        Ok(sgp4_result) => Ok(to_value(&sgp4_result).unwrap()),
+        Err(sgp4_error) => Err(to_value(&sgp4_error).unwrap()),
+    }
 }

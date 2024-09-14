@@ -1,5 +1,5 @@
 use crate::EciVec3;
-
+use wasm_bindgen::prelude::*;
 fn sign(value: f64) -> f64 {
     if value >= 0.0 {
         1.0
@@ -8,6 +8,7 @@ fn sign(value: f64) -> f64 {
     }
 }
 // 计算多普勒因子
+#[wasm_bindgen(js_name = "dopplerFactor")]
 pub fn doppler_factor(location: &EciVec3, position: &EciVec3, velocity: &EciVec3) -> f64 {
     const M_FACTOR: f64 = 7.292115E-5; // 地球自转角速度
     const LIGHT_SPEED: f64 = 299792.458; // 光速 km/s

@@ -5,20 +5,28 @@ use crate::Topocentric;
 use crate::EciVec3;
 use crate::EcfVec3;
 use crate::RangeErr;
+extern crate wasm_bindgen;
+use wasm_bindgen::prelude::*;
+
 
 const A: f64 = 6378.137;
 const B: f64 = 6356.7523142;
 const F: f64 = (A - B) / A;
 const E2: f64 = (2.0 * F) - (F * F);
 
+
+#[wasm_bindgen(js_name="radiansToDegrees")]
 pub fn radians_to_degrees(radians: f64) -> f64 {
     radians * RAD2DEG
 }
 
+#[wasm_bindgen(js_name="degreesToRadians")]
 pub fn degrees_to_radians(degree: f64) -> f64 {
     degree * DEG2RAD
 }
 
+
+#[wasm_bindgen(js_name="degreesLat")]
 pub fn degrees_lat(radians: f64) -> Result<f64,RangeErr> {
     if radians < (-PI / 2.0) || radians > (PI / 2.0) {
        return Err(RangeErr{
@@ -29,7 +37,7 @@ pub fn degrees_lat(radians: f64) -> Result<f64,RangeErr> {
     Ok(radians_to_degrees(radians))
     
 }
-
+#[wasm_bindgen(js_name="degreesLong")]
 pub fn degrees_long(radians: f64) -> Result<f64,RangeErr> {
     if radians < (-PI) || radians > (PI) {
         return Err(RangeErr{
@@ -40,6 +48,7 @@ pub fn degrees_long(radians: f64) -> Result<f64,RangeErr> {
     
 }
 
+#[wasm_bindgen(js_name="radiansLat")]
 pub fn radians_lat(degrees: f64) -> Result<f64,RangeErr> {
     if degrees < (-90.0) || degrees > (90.0) {
         return Err(RangeErr{
@@ -49,6 +58,7 @@ pub fn radians_lat(degrees: f64) -> Result<f64,RangeErr> {
     Ok(degrees_to_radians(degrees))
 }
 
+#[wasm_bindgen(js_name="radiansLong")]
 pub fn radians_long(degrees: f64) -> Result<f64,RangeErr> {
     if degrees < (-180.0) || degrees > (180.0) {
         
@@ -59,6 +69,7 @@ pub fn radians_long(degrees: f64) -> Result<f64,RangeErr> {
     Ok(degrees_to_radians(degrees))
 }
 
+#[wasm_bindgen(js_name="geodeticToEcf")]
 pub fn geodetic_to_ecf(geodetic: &GeodeticLocation) -> EcfVec3 {
     let latitude: f64 = geodetic.latitude;
     let longitude: f64 = geodetic.longitude;
@@ -73,6 +84,7 @@ pub fn geodetic_to_ecf(geodetic: &GeodeticLocation) -> EcfVec3 {
     EcfVec3 { x, y, z }
 }
 
+#[wasm_bindgen(js_name="eciToGeodetic")]
 pub fn eci_to_geodetic(eci: &EciVec3, gmst: f64) -> GeodeticLocation {
     // http://www.celestrak.com/columns/v02n03/
     let r: f64 = (eci.x * eci.x + eci.y * eci.y).sqrt();
@@ -105,6 +117,7 @@ pub fn eci_to_geodetic(eci: &EciVec3, gmst: f64) -> GeodeticLocation {
     }
 }
 
+#[wasm_bindgen(js_name="eciToEcf")]
 pub fn ecf_to_eci(ecf: &EcfVec3, gmst: f64) -> EciVec3 {
     //
     // [X]     [C -S  0][X]
@@ -118,6 +131,7 @@ pub fn ecf_to_eci(ecf: &EcfVec3, gmst: f64) -> EciVec3 {
     EciVec3 { x, y, z }
 }
 
+#[wasm_bindgen(js_name="ecfToEci")]
 pub fn eci_to_ecf(eci: &EciVec3, gmst: f64) -> EcfVec3 {
     // ccar.colorado.edu/ASEN5070/handouts/coordsys.doc
     //
@@ -179,6 +193,7 @@ pub fn eci_to_ecf(eci: &EciVec3, gmst: f64) -> EcfVec3 {
     }
 }
 
+#[wasm_bindgen(js_name="ecfToLookAngles")]
 pub fn ecf_to_look_angles(observer_geodetic: &GeodeticLocation, satellite_ecf: &EcfVec3) -> LookAngles {
     let topocentric_coords = topocentric(observer_geodetic, satellite_ecf);
     topocentric_to_look_angles(&topocentric_coords)

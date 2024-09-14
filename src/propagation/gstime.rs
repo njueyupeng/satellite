@@ -1,5 +1,6 @@
 use chrono::prelude::*;
 use chrono::DateTime;
+use wasm_bindgen::prelude::*;
 
 use crate::constants::{DEG2RAD, TWO_PI};
 use crate::ext::jday_date;
@@ -46,7 +47,7 @@ fn gstime_internal(jdut1: f64) -> f64 {
 
     temp
 }
-
+#[wasm_bindgen]
 pub fn gstime(args: f64) -> f64 {
     gstime_internal(args)
 }

@@ -1,5 +1,6 @@
 use chrono::prelude::*;
 use chrono::DateTime;
+use wasm_bindgen::prelude::*;
 
 pub struct CustomDate {
     pub month: u64,
@@ -9,19 +10,18 @@ pub struct CustomDate {
     pub second: u64,
 }
 
-
-pub fn is_leap_year(year:u32)->bool {
+pub fn is_leap_year(year: u32) -> bool {
     if year % 4 == 0 {
-      if year % 100 == 0 {
-        if year % 400 == 0 {
-          return true;
+        if year % 100 == 0 {
+            if year % 400 == 0 {
+                return true;
+            }
+            return false;
         }
-        return false;
-      }
-      return true;
+        return true;
     }
     return false;
-  }
+}
 /* -----------------------------------------------------------------------------
  *
  *                           procedure days2mdhms
@@ -79,13 +79,13 @@ pub fn days2mdhms(year: u32, days: f64) -> CustomDate {
     //  ----------------- find month and day of month ----------------
     let mut i = 1;
     let mut inttemp = 0;
-    while (dayofyr > (inttemp  + lmonth[i - 1])) && i < 12 {
+    while (dayofyr > (inttemp + lmonth[i - 1])) && i < 12 {
         inttemp += lmonth[i - 1];
         i += 1;
     }
 
     let month: u64 = i as u64;
-    let day = dayofyr- inttemp ;
+    let day = dayofyr - inttemp;
 
     //  ----------------- find hours minutes and seconds -------------
     let mut temp = (days - dayofyr as f64) * 24.0;
@@ -151,6 +151,7 @@ pub fn jday_internal(
         + (((((msec / 60000.0) + (sec / 60.0) + minute) / 60.0) + hour) / 24.0)
 }
 
+#[wasm_bindgen]
 pub fn jday(year: f64, mon: f64, day: f64, hour: f64, minute: f64, sec: f64, msec: f64) -> f64 {
     // todo
     jday_internal(year, mon, day, hour, minute, sec, msec)
@@ -193,7 +194,6 @@ pub fn jday_date(datetime: DateTime<Utc>) -> f64 {
 //     let hour = mdhms.hour;
 //     let minute = mdhms.minute;
 
-  
 //     let sec = mdhms.second as f64 - 0.00000086400;
 
 //     // todo
